@@ -1,4 +1,4 @@
-from .. import resolver
+from .. import querier
 
 import unittest
 import time
@@ -28,8 +28,8 @@ class GenericParserTestCase(unittest.TestCase):
             'wordpress-fr.net',
         ):
             try:
-                whois_resolver = resolver.Resolver()
-                parsed = whois_resolver.query(domain)
+                whois_querier = querier.Querier()
+                parsed = whois_querier.query(domain)
                 parsed = parsed['parsed']
             except Exception as exc:
                 print(domain)
