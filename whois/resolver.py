@@ -1,32 +1,48 @@
-import tldextract
 import subprocess
 import shlex
-import tempfile
 import os
-
-from . import parser
+import platform
+import re
 
 
 class Resolver:
     '''
     '''
     def __init__(self):
-        self.tldextract = tldextract.tldextract.TLDExtract(
-            os.path.join(tempfile.gettempdir(), 'tld_extract_data'),
-        )
-        self.whois_parser = parser.Parser()
+        pass
 
-    def get_raw_whois(self, domain, program='whois'):
+    def get_raw_whois(self, domain, program=None):
         timeout = 10
+
+        if not program:
+            current_os = platform.system()
+            if current_os == 'Linux':
+                program = os.path.abspath(
+                    path=os.path.join(
+                        os.path.dirname(__file__),
+                        'bin/whois_elf32',
+                    )
+                )
+            elif current_os == 'Windows':
+                program = os.path.abspath(
+                    path=os.path.join(
+                        os.path.dirname(__file__),
+                        'bin/whois.exe',
+                    )
+                )
+            else:
+                program = 'whois'
+
         command = '{program} {domain}'.format(
             program=program,
             domain=domain,
         )
+        is_posix = os.name == 'posix'
 
         completed_process = None
         try:
             completed_process = subprocess.run(
-                args=shlex.split(command),
+                args=shlex.split(command, posix=is_posix),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 timeout=timeout,
@@ -38,7 +54,6 @@ class Resolver:
             output = completed_process.stdout
 
         whois_raw_data = output.decode('utf-8', errors='ignore')
-        whois_raw_data = whois_raw_data.replace('\r\n', '\n')
 
         process_timed_out = completed_process is None
         process_error = process_timed_out or (completed_process and completed_process.returncode == 0)
@@ -49,48 +64,45 @@ class Resolver:
             'error': process_error,
         }
 
-    def get_domain_parts(self, domain):
-        domain_extracted = self.tldextract(domain)
-
-        domain_part = domain_extracted.domain
-        suffix_part = domain_extracted.suffix
-
-        if not domain_extracted.suffix or not domain_extracted.domain:
-            return None
-
-        return {
-            'domain': domain_part,
-            'suffix': suffix_part,
-        }
-
-    def query(self, domain):
+    def remove_program_banner(self, whois_data):
         '''
         '''
-        domain_parts = self.get_domain_parts(
-            domain=domain,
+        whois_data = re.sub(
+            pattern='.*Mark Russinovich',
+            repl='',
+            string=whois_data,
+            flags=re.DOTALL,
+        )
+        whois_data = re.sub(
+            pattern='^Connecting to.*\.\.\.$',
+            repl='',
+            string=whois_data,
+            flags=re.MULTILINE,
         )
 
-        if not domain_parts:
-            raise DomainIsInvalid()
+        return whois_data
 
+    def normalize_raw_whois(self, whois_data):
+        '''
+        '''
+        normalized_whois = whois_data
+
+        normalized_whois = normalized_whois.replace('\r\n', '\n')
+        normalized_whois = self.remove_program_banner(normalized_whois)
+        normalized_whois = normalized_whois.strip()
+
+        return normalized_whois
+
+    def resolve(self, domain):
+        '''
+        '''
         raw_whois = self.get_raw_whois(
             domain=domain,
         )
 
-        parsed_whois = self.whois_parser.parse(
-            domain_parts=domain_parts,
-            raw_whois=raw_whois,
+        normalized_whois = self.normalize_raw_whois(
+            whois_data=raw_whois['whois_data'],
         )
+        raw_whois['whois_data'] = normalized_whois
 
-        return {
-            'raw_whois': raw_whois,
-            'parsed': parsed_whois,
-        }
-
-
-class WhoisResolverException(Exception):
-    pass
-
-
-class DomainIsInvalid(WhoisResolverException):
-    pass
+        return raw_whois
