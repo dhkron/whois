@@ -7,6 +7,10 @@ import traceback
 
 class GenericParserTestCase(unittest.TestCase):
     def test_parse(self):
+
+        failed = 0
+        passed = 0
+
         for domain in (
             "1and1.com",
             "about.com",
@@ -298,10 +302,13 @@ class GenericParserTestCase(unittest.TestCase):
                 print(''.join(traceback.format_tb(exc.__traceback__)))
 
             if parsed['creation_date']:
-                # print(str(parsed).encode('ascii', 'ignore'))
-                pass
+                print(str(parsed).encode('ascii', 'ignore'))
+                passed = passed + 1
             else:
                 print(str(parsed).encode('ascii', 'ignore'))
                 print(domain)
+                failed = failed + 1
 
             time.sleep(1)
+
+        print("Tests Passed: " + str(passed) + " Tests Failed: " + str(failed))

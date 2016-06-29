@@ -1,19 +1,52 @@
 from . import resources
+from . import _matchers
+from . import _converters
 
 
 class Parser:
     '''
     '''
+    domain_not_exist_messages = [
+        'no whois information found.',
+        'domain not found',
+        'no such host is known.',
+        'no match for',
+    ]
+
+    has_no_whois_server_messages = [
+        'no whois server',
+    ]
+
+    blocked_whois_request_messages = [
+        'blacklist',
+        'connection refused',
+        'Network is unreachable',
+    ]
+
     @classmethod
     def parse(cls, raw_whois):
         '''
         '''
-        parsed_whois = {}
+        parsed_whois = {
+            'has_whois_server': True,
+            'is_domain_exist': True,
+        }
+
+        has_whois_server = cls.has_whois_server(
+            raw_whois=raw_whois,
+        )
+        if not has_whois_server:
+            return {
+                'has_whois_server': False,
+            }
 
         is_domain_exist = cls.is_domain_exist(
             raw_whois=raw_whois,
         )
-        parsed_whois['is_domain_exist'] = is_domain_exist
+        if not is_domain_exist:
+            return {
+                'is_domain_exist': False,
+            }
 
         is_blocked = cls.is_blocked(
             raw_whois=raw_whois,
@@ -34,12 +67,11 @@ class Parser:
             raw_whois=raw_whois,
         )
         parsed_whois['registrar'] = registrar
-
+        
         registrant = cls.extract_registrant(
             raw_whois=raw_whois,
         )
         parsed_whois['registrant'] = registrant
-
 
         return parsed_whois
 
@@ -47,23 +79,37 @@ class Parser:
     def is_blocked(cls, raw_whois):
         '''
         '''
-        return False
+        for blocked_whois_request_message in cls.blocked_whois_request_messages:
+            if blocked_whois_request_message in raw_whois.lower():
+                return True
+        else:
+            return False
+
+    @classmethod
+    def has_whois_server(cls, raw_whois):
+        '''
+        '''
+        for has_no_whois_server_message in cls.has_no_whois_server_messages:
+            if has_no_whois_server_message in raw_whois.lower():
+                return False
+        else:
+            return True
 
     @classmethod
     def is_domain_exist(cls, raw_whois):
         '''
         '''
         for domain_not_exist_message in cls.domain_not_exist_messages:
-            if domain_not_exist_message in raw_whois['whois_data']:
+            if domain_not_exist_message in raw_whois.lower():
                 return False
-
-        return True
+        else:
+            return True
 
     @classmethod
     def extract_creation_date(cls, raw_whois):
         creation_date = cls.extract(
             attribute_name='creation_date',
-            subject=raw_whois['whois_data'],
+            subject=raw_whois,
         )
 
         return creation_date
@@ -72,21 +118,30 @@ class Parser:
     def extract_updated_date(cls, raw_whois):
         updated_date = cls.extract(
             attribute_name='updated_date',
-            subject=raw_whois['whois_data'],
+            subject=raw_whois,
         )
 
         return updated_date
 
     @classmethod
+    def extract_expiration_date(cls, raw_whois):
+        expiration_date = cls.extract(
+            attribute_name='expiration_date',
+            subject=raw_whois,
+        )
+
+        return expiration_date
+
+    @classmethod
     def extract_registrar(cls, raw_whois):
         registrar = cls.extract(
             attribute_name='registrar',
-            subject=raw_whois['whois_data'],
+            subject=raw_whois,
         )
 
         if not registrar:
             registrar = resources.registrars.Registrars.get_registrar(
-                raw_whois=raw_whois['whois_data'],
+                raw_whois=raw_whois,
             )
 
         return registrar
@@ -95,7 +150,7 @@ class Parser:
     def extract_registrant(cls, raw_whois):
         registrant = cls.extract(
             attribute_name='registrant',
-            subject=raw_whois['whois_data'],
+            subject=raw_whois,
         )
 
         return registrant
@@ -104,59 +159,17 @@ class Parser:
     def extract(cls, attribute_name, subject):
         '''
         '''
-        for extractor in cls.extractors[attribute_name]:
-            match = cls.match(
-                pattern=extractor['match'],
-                subject=subject.replace('\r\n','\n'),
-            )
-
+        match = None
+        for matcher in _matchers.matchers[attribute_name]:
+            match = matcher.match(subject)
             if not match:
                 continue
 
-            if 'converter' not in extractor:
-                return match
-
-            converted_value = cls.convert(
-                pattern=extractor['converter'],
-                subject=match,
-            )
-
-            if converted_value:
-                return converted_value
-
-        return None
-
-    @classmethod
-    def match(cls, pattern, subject):
-        '''
-        '''
-        if pattern['type'] == 'regex':
-            for compiled_regex in pattern['values']:
-                match = compiled_regex.search(subject)
-                if not match:
+            for converter in _converters.converters[attribute_name]:
+                conversion = converter.convert(match)
+                if not conversion:
                     continue
 
-                matched_value = match.group(pattern['group_name'])
-                if 'normalizer' not in pattern:
-                    return matched_value
-
-                normalized_value = pattern['normalizer'](matched_value)
-
-                return normalized_value
-
-        return None
-
-    @classmethod
-    def convert(cls, pattern, subject):
-        '''
-        '''
-        if pattern['type'] == 'function':
-            converted_string = pattern['value'](subject)
-            if 'normalizer' not in pattern:
-                return converted_string
-
-            normalized_value = pattern['normalizer'](converted_string)
-
-            return normalized_value
+                return conversion
 
         return None
