@@ -1,3 +1,5 @@
+import re
+
 from . import resources
 from . import _matchers
 from . import _converters
@@ -6,12 +8,7 @@ from . import _converters
 class Parser:
     '''
     '''
-    domain_not_exist_messages = [
-        'no whois information found.',
-        'domain not found',
-        'no such host is known.',
-        'no match for',
-    ]
+    domain_not_exist_patterns = resources.patterns.domain_not_exist_patterns
 
     has_no_whois_server_messages = [
         'no whois server',
@@ -27,31 +24,25 @@ class Parser:
     def parse(cls, raw_whois):
         '''
         '''
-        parsed_whois = {
-            'has_whois_server': True,
-            'is_domain_exist': True,
-        }
+        parsed_whois = {}
 
         has_whois_server = cls.has_whois_server(
             raw_whois=raw_whois,
         )
         if not has_whois_server:
-            return {
-                'has_whois_server': False,
-            }
+            raise NoWhoisServer()
 
         is_domain_exist = cls.is_domain_exist(
             raw_whois=raw_whois,
         )
         if not is_domain_exist:
-            return {
-                'is_domain_exist': False,
-            }
+            raise DomainNotExists()
 
         is_blocked = cls.is_blocked(
             raw_whois=raw_whois,
         )
-        parsed_whois['is_blocked'] = is_blocked
+        if is_blocked:
+            raise Blocked()
 
         creation_date = cls.extract_creation_date(
             raw_whois=raw_whois,
@@ -67,7 +58,7 @@ class Parser:
             raw_whois=raw_whois,
         )
         parsed_whois['registrar'] = registrar
-        
+
         registrant = cls.extract_registrant(
             raw_whois=raw_whois,
         )
@@ -99,8 +90,12 @@ class Parser:
     def is_domain_exist(cls, raw_whois):
         '''
         '''
-        for domain_not_exist_message in cls.domain_not_exist_messages:
-            if domain_not_exist_message in raw_whois.lower():
+        for domain_not_exist_pattern in cls.domain_not_exist_patterns:
+            if re.search(
+                pattern=domain_not_exist_pattern,
+                string=raw_whois.lower(),
+                flags=re.IGNORECASE,
+            ):
                 return False
         else:
             return True
@@ -173,3 +168,19 @@ class Parser:
                 return conversion
 
         return None
+
+
+class ParserException(Exception):
+    pass
+
+
+class NoWhoisServer(ParserException):
+    pass
+
+
+class DomainNotExists(ParserException):
+    pass
+
+
+class Blocked(ParserException):
+    pass
