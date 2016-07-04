@@ -7,7 +7,7 @@ class Registrars:
         https://www.icann.org/registrar-reports/accredited-list.html
     '''
     @staticmethod
-    def get_registrar(raw_whois):
+    def get_registrar(subject):
         '''
         '''
         if not getattr(Registrars, 'registrars', None):
@@ -26,11 +26,11 @@ class Registrars:
                 if len(registrar['edited']) > 4
             ]
 
-        edited_raw_whois = re.sub('[^\d\w]', '', raw_whois)
-        edited_raw_whois = edited_raw_whois.lower()
+        edited_subject = re.sub('[^\d\w]', '', subject)
+        edited_subject = edited_subject.lower()
 
         for registrar in Registrars.registrars:
-            if registrar['edited'].lower() in edited_raw_whois:
+            if registrar['edited'].lower() in edited_subject:
                 return registrar['original']
 
         return None

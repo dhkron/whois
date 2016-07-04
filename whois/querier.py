@@ -2,6 +2,7 @@ import tldextract
 import os
 import tempfile
 
+from . import _config
 from . import parser
 from . import resolver
 
@@ -40,6 +41,10 @@ class Querier:
     def query(self, domain, method='program'):
         '''
         '''
+        domain_parts = self.get_domain_parts(
+            domain=domain,
+        )
+
         raw_whois = self.resolver.resolve(
             domain=domain,
             method=method,
@@ -57,7 +62,8 @@ class Querier:
             raise Blocked()
 
         if parsed_whois['creation_date'] is None and parsed_whois['updated_date'] is None:
-            raise ParsingError()
+            if domain_parts['suffix'] not in _config.partial_data_tlds:
+                raise ParsingError()
 
         return {
             'raw_whois': raw_whois,

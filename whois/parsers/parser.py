@@ -54,6 +54,11 @@ class Parser:
         )
         parsed_whois['updated_date'] = updated_date
 
+        expiration_date = cls.extract_expiration_date(
+            raw_whois=raw_whois,
+        )
+        parsed_whois['expiration_date'] = expiration_date
+
         registrar = cls.extract_registrar(
             raw_whois=raw_whois,
         )
@@ -128,15 +133,30 @@ class Parser:
         return expiration_date
 
     @classmethod
+    def extract_expiration_date(cls, raw_whois):
+        expiration_date = cls.extract(
+            attribute_name='expiration_date',
+            subject=raw_whois,
+        )
+
+        return expiration_date
+
+    @classmethod
     def extract_registrar(cls, raw_whois):
         registrar = cls.extract(
             attribute_name='registrar',
             subject=raw_whois,
         )
 
-        if not registrar:
+        if registrar:
+            edited_registrar = resources.registrars.Registrars.get_registrar(
+                subject=registrar,
+            )
+
+            return edited_registrar
+        else:
             registrar = resources.registrars.Registrars.get_registrar(
-                raw_whois=raw_whois,
+                subject=raw_whois,
             )
 
         return registrar
