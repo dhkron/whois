@@ -141,11 +141,6 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
-            pattern=r'Changed:\s+(?P<value>.*)',
-            group='value',
-            flags=re.IGNORECASE,
-        ),
-        matcher.Regex(
             pattern=r'Registered Date\s+: (?P<value>.*)',
             group='value',
             flags=re.IGNORECASE,
@@ -172,11 +167,6 @@ matchers = {
         ),
         matcher.Regex(
             pattern=r'Data de registo / Creation Date \(dd/mm/yyyy\):\s(?P<value>.+)',
-            group='value',
-            flags=re.IGNORECASE,
-        ),
-        matcher.Regex(
-            pattern=r'changed:\s*[\D]*(?P<value>.*)',
             group='value',
             flags=re.IGNORECASE,
         ),
@@ -400,7 +390,7 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
-            pattern=r'(C|c)hanged:\s*(?P<value>.+)',
+            pattern=r'changed:\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
         ),
