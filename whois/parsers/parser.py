@@ -17,7 +17,10 @@ class Parser:
     blocked_whois_request_messages = [
         'blacklist',
         'connection refused',
-        'Network is unreachable',
+        'network is unreachable',
+        'lookup quota exceeded',
+        'your request could not be performed.',
+        'connection reset by peer'
     ]
 
     @classmethod

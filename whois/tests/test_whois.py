@@ -12,7 +12,7 @@ from .. import resolvers
 
 
 def get_domains():
-    with open('/home/uri/Downloads/domains_prod.txt') as f:
+    with open('/home/uri/Downloads/new.txt') as f:
         content = f.readlines()
 
     for domain in content:
@@ -30,27 +30,23 @@ def check_domain(domain):
         q = querier.Querier()
         try:
             result = q.query(domain.rstrip())
-        except querier.DomainIsInvalid:
-            print("DomainIsInvalid " + domain.rstrip())
+        except querier.NoWhoisServer:
+            print("NoWhoisServer " + domain.rstrip())
             return
-
-        except querier.WhoIsServerDoesNotExist:
-            print("WhoIsServerDoesNotExist " + domain.rstrip())
-            return
-
-        except querier.DomainDoesNotExist:
+        except querier.DomainNotExists:
             print("DomainDoesNotExist. " + domain.rstrip())
             return
-
-        except querier.CannotParse:
+        except querier.ParsingError:
             print('Bad Domain. No creation_date and no updated_date ' + domain.rstrip())
             return
-
-        except querier.BlockedWhoisRequest:
-            print('BlockedWhoisRequest: ' + domain.rstrip())
+        except querier.Blocked:
+            print('Blocked: ' + domain.rstrip())
             return
-        except resolvers.program.WhoisTimeout:
+        except querier.WhoisTimedOut:
             print('WhoisTimeout: ' + domain.rstrip())
+            return
+        except querier.DomainNotExists:
+            print('Domain does not exists' + domain.rstrip())
             return
         if not result['raw_whois']:
             print("Bad Domain. A raw key was not present. " + domain.rstrip())
@@ -67,7 +63,7 @@ def check_domain(domain):
         if "has no whois server" in str(ex):
             print("Skipped domain. " + tld.suffix)
         else:
-            print("Bad Domain. Who Is did not succeed. " + tld.suffix)
+            print("Bad Domain. Who Is did not succeed. " + domain.rstrip())
 
 
 def test_who_is():

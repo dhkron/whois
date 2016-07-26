@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='whois',
-    version='0.1.0',
+    version='0.1.5',
     author='gal@intsights.com',
     author_email='gal@intsights.com',
     description=('A fast, simple, and comprehensive whois library'),

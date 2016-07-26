@@ -34,4 +34,5 @@ domain_not_exist_patterns = [
     r'No Found',
     r'%ERROR:103: Domain is not registered',
     r'% Not Registered',
+    r'name or service not known',
 ]

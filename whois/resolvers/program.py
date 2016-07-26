@@ -52,7 +52,7 @@ class Resolver(_resolver.Resolver):
                 timeout=timeout,
             )
         except subprocess.TimeoutExpired as exception:
-            raise WhoisTimeout()
+            raise _resolver.WhoisTimedOut()
 
         if completed_process:
             output = completed_process.stdout
@@ -110,7 +110,3 @@ class Resolver(_resolver.Resolver):
         )
 
         return normalized_whois
-
-
-class WhoisTimeout(Exception):
-    pass

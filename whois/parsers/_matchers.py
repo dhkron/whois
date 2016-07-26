@@ -141,11 +141,6 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
-            pattern=r'Changed:\s+(?P<value>.*)',
-            group='value',
-            flags=re.IGNORECASE,
-        ),
-        matcher.Regex(
             pattern=r'Registered Date\s+: (?P<value>.*)',
             group='value',
             flags=re.IGNORECASE,
@@ -176,17 +171,32 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
-            pattern=r'changed:\s*[\D]*(?P<value>.*)',
-            group='value',
-            flags=re.IGNORECASE,
-        ),
-        matcher.Regex(
             pattern=r'activated on:\s+(?P<value>.*)',
             group='value',
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
             pattern=r'Fecha de registro[:]?\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Date de creation[:]?\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Fecha de Creacion[:]?\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Activation:\.*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'domain_dateregistered[:]?\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
         ),
@@ -400,7 +410,7 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
-            pattern=r'(C|c)hanged:\s*(?P<value>.+)',
+            pattern=r'changed:\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
         ),
@@ -431,6 +441,26 @@ matchers = {
         ),
         matcher.Regex(
             pattern=r'\[Last Update\]\s*(?P<value>.+) \([A-Z]+\)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Updated\s?[.]*:\s?(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Last-update\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Derniere modification:\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'domain_datelastmodified:\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
         ),

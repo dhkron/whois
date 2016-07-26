@@ -1,3 +1,5 @@
+from . import _resolver
+
 from . import program
 
 

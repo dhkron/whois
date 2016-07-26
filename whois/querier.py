@@ -31,7 +31,7 @@ class Querier:
         suffix_part = domain_extracted.suffix
 
         if not domain_extracted.suffix or not domain_extracted.domain:
-            return None
+            raise InvalidDomain()
 
         return {
             'domain': domain_part,
@@ -45,25 +45,38 @@ class Querier:
             domain=domain,
         )
 
-        raw_whois = self.resolver.resolve(
-            domain=domain,
-            method=method,
-        )
+        try:
+            raw_whois = self.resolver.resolve(
+                domain=domain,
+                method=method,
+            )
+        except resolvers._resolver.WhoisTimedOut:
+            raise WhoisTimedOut(
+                raw_whois='',
+            )
 
         try:
             parsed_whois = self.whois_parser.parse(
                 raw_whois=raw_whois,
             )
         except parsers.parser.DomainNotExists:
-            raise DomainNotExists()
+            raise DomainNotExists(
+                raw_whois=raw_whois,
+            )
         except parsers.parser.NoWhoisServer:
-            raise NoWhoisServer()
+            raise NoWhoisServer(
+                raw_whois=raw_whois,
+            )
         except parsers.parser.Blocked:
-            raise Blocked()
+            raise Blocked(
+                raw_whois=raw_whois,
+            )
 
         if parsed_whois['creation_date'] is None and parsed_whois['updated_date'] is None:
-            if domain_parts['suffix'] not in _config.partial_data_tlds:
-                raise ParsingError()
+            if domain_parts is None or domain_parts['suffix'] not in _config.partial_data_tlds:
+                raise ParsingError(
+                    raw_whois=raw_whois,
+                )
 
         return {
             'raw_whois': raw_whois,
@@ -72,7 +85,8 @@ class Querier:
 
 
 class WhoisResolverException(Exception):
-    pass
+    def __init__(self, raw_whois):
+        self.raw_whois = raw_whois
 
 
 class ParsingError(WhoisResolverException):
@@ -88,4 +102,12 @@ class NoWhoisServer(WhoisResolverException):
 
 
 class Blocked(WhoisResolverException):
+    pass
+
+
+class WhoisTimedOut(WhoisResolverException):
+    pass
+
+
+class InvalidDomain(WhoisResolverException):
     pass

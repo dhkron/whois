@@ -40,6 +40,24 @@ class DateRegex:
             return None
 
 
+class DateGeneric:
+    def __init__(self):
+        pass
+
+    def convert(self, date_string):
+        try:
+            date_object = dateutil.parser.parse(
+                timestr=date_string,
+                fuzzy=True,
+            )
+
+            return date_object.replace(
+                tzinfo=None,
+            )
+        except:
+            return None
+
+
 class Dummy:
     '''
     '''
