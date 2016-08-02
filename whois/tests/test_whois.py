@@ -53,6 +53,8 @@ def check_domain(domain):
 
         try:
             print("Good Domain. " + domain.rstrip() + " " + result['parsed']['creation_date'].strftime("%d/%m/%y"))
+            if result['parsed']['registrant']:
+                print(result['parsed']['registrant'])
         except Exception as ex:
             if result['parsed']['updated_date']:
                 print("Good Domain With Updated Date Only. " + domain.rstrip() + " " + result['parsed']['updated_date'].strftime("%d/%m/%y"))
@@ -157,3 +159,5 @@ if "__main__" == __name__:
     # ok.mapTLDToDomainServer()
     test_who_is()
     # show_raw_whois()
+    # import ipdb; ipdb.set_trace()
+    # check_domain('abalfazlschools.ir')

@@ -524,6 +524,11 @@ matchers = {
     ],
     'registrant': [
         matcher.Regex(
+            pattern=r'    Registrant:\n        (?P<value>.+)\n\n',
+            group='value',
+            flags=re.IGNORECASE | re.MULTILINE,
+        ),
+        matcher.Regex(
             pattern=r'Registrant Organization:\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
@@ -535,6 +540,181 @@ matchers = {
         ),
         matcher.Regex(
             pattern=r'Owner OrgName : (?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Organisation: (?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'   Registrant:[ ]*\n      (?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant:\n  (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'(?:Registrant Organization:(?P<value>.*)\n)?',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Organization:(?P<value>.*)?',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Organization: (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant\n(?:    (?P<value>.+)\n)?',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r' Registrant Contact Details:[ ]*\n    (?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'(?:owner-organization:[ ]*(?P<value>.*)\n)?',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant:\n registrant_org: (?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Holder of domain name:\n(?P<value>[\S\s]+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Contact Information:\n\[Name\]\s*(?P<value>.*)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'g\. \[Organization\]               (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Organization:(?P<value>.*)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Organization:     (?P<value>.+)\n?',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r' Organisation Name[.]* (?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Eligibility Name:[ ]*(?P<value>.+)\n[\s\S]*',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant:[ ]*(?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Domain Owner:\n\t(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant: (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'registrant-organization:\s*(?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Contact Information :[ ]*\n[ ]+.*\n[ ]+.*\n[ ]+(?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Contact Information : For Customer # [0-9]+[ ]*\n[ ]+.*\n[ ].*\n[ ]+(?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant:\n   Name:           (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'   Registrant:\n      (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Domain Holder: (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'   Registrant:\n      (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant:\n(?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Contact Information:\n\nCompany English Name \(It should be the same as the registered/corporation name on your Business Register Certificate or relevant documents\):(?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Organization:(?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Organization Using Domain Name\n Organization Name\.+:(?P<value>.*)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'owner:\s+(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'org:\s+(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant                  : (?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'    Registrant:\n\n        Name:(?P<value>.+)        ',
             group='value',
             flags=re.IGNORECASE,
         ),

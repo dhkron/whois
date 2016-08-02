@@ -7,7 +7,7 @@ setuptools.setup(
     author='gal@intsights.com',
     author_email='gal@intsights.com',
     description=('A fast, simple, and comprehensive whois library'),
-    zip_safe=True,
+    zip_safe=False,
     install_requires=[
         'tldextract',
         'python-dateutil',

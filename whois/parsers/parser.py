@@ -136,15 +136,6 @@ class Parser:
         return expiration_date
 
     @classmethod
-    def extract_expiration_date(cls, raw_whois):
-        expiration_date = cls.extract(
-            attribute_name='expiration_date',
-            subject=raw_whois,
-        )
-
-        return expiration_date
-
-    @classmethod
     def extract_registrar(cls, raw_whois):
         registrar = cls.extract(
             attribute_name='registrar',
