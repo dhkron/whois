@@ -73,7 +73,7 @@ class Querier:
             )
 
         if parsed_whois['creation_date'] is None and parsed_whois['updated_date'] is None:
-            if domain_parts is None or domain_parts['suffix'] not in _config.partial_data_tlds:
+            if domain_parts['suffix'] not in _config.partial_data_tlds:
                 raise ParsingError(
                     raw_whois=raw_whois,
                 )
