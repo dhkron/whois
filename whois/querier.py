@@ -78,10 +78,11 @@ class Querier:
                     raw_whois=raw_whois,
                 )
 
-        return {
-            'raw_whois': raw_whois,
-            'parsed': parsed_whois,
-        }
+        whois_result = {}
+        whois_result.update(parsed_whois)
+        whois_result['raw'] = raw_whois
+
+        return whois_result
 
 
 class WhoisResolverException(Exception):

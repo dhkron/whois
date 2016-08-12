@@ -1,14 +1,12 @@
 import concurrent.futures
 import tldextract
 import traceback
-import csv
 import bs4
 import urllib.request
 import subprocess
 import shlex
 
 from .. import querier
-from .. import resolvers
 
 
 def get_domains():
@@ -52,12 +50,12 @@ def check_domain(domain):
             print("Bad Domain. A raw key was not present. " + domain.rstrip())
 
         try:
-            print("Good Domain. " + domain.rstrip() + " " + result['parsed']['creation_date'].strftime("%d/%m/%y"))
-            if result['parsed']['registrant']:
-                print(result['parsed']['registrant'])
+            print("Good Domain. " + domain.rstrip() + " " + result['creation_date'].strftime("%d/%m/%y"))
+            if result['registrant']:
+                print(result['registrant'])
         except Exception as ex:
-            if result['parsed']['updated_date']:
-                print("Good Domain With Updated Date Only. " + domain.rstrip() + " " + result['parsed']['updated_date'].strftime("%d/%m/%y"))
+            if result['updated_date']:
+                print("Good Domain With Updated Date Only. " + domain.rstrip() + " " + result['updated_date'].strftime("%d/%m/%y"))
             else:
                 print("Bad Domain. Not time given. " + domain.rstrip())
     except Exception as ex:

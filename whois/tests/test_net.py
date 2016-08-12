@@ -34,7 +34,6 @@ class GenericParserTestCase(unittest.TestCase):
             try:
                 whois_querier = querier.Querier()
                 parsed = whois_querier.query(domain)
-                parsed = parsed['parsed']
             except Exception as exc:
                 print(domain)
                 print(''.join(traceback.format_tb(exc.__traceback__)))
