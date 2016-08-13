@@ -19,8 +19,9 @@ class Resolver(_resolver.Resolver):
 
         current_os = platform.system()
         current_architecture = platform.architecture()
+        current_architecture_bits = current_architecture[0]
         if current_os == 'Linux':
-            if current_architecture == '64bit':
+            if current_architecture_bits == '64bit':
                 program = os.path.abspath(
                     path=os.path.join(
                         os.path.dirname(__file__),
