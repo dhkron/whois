@@ -18,13 +18,23 @@ class Resolver(_resolver.Resolver):
         timeout = 10
 
         current_os = platform.system()
+        current_architecture = platform.architecture()
         if current_os == 'Linux':
-            program = os.path.abspath(
-                path=os.path.join(
-                    os.path.dirname(__file__),
-                    '../bin/whois_elf32',
+            if current_architecture == '64bit':
+                program = os.path.abspath(
+                    path=os.path.join(
+                        os.path.dirname(__file__),
+                        '../bin/whois_elf64',
+                    )
                 )
-            )
+            else:
+                program = os.path.abspath(
+                    path=os.path.join(
+                        os.path.dirname(__file__),
+                        '../bin/whois_elf32',
+                    )
+                )
+
             original_permissions = os.stat(program)
             os.chmod(program, original_permissions.st_mode | stat.S_IXGRP | stat.S_IXUSR | stat.S_IXOTH)
         elif current_os == 'Windows':
