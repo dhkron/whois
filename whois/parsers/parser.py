@@ -20,7 +20,9 @@ class Parser:
         'network is unreachable',
         'lookup quota exceeded',
         'your request could not be performed.',
-        'connection reset by peer'
+        'connection reset by peer',
+        'the number of requests per client per time interval',
+        'you have exceeded this limit',
     ]
 
     @classmethod
