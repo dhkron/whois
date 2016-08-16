@@ -8,7 +8,7 @@ class Resolver:
         raise NotImplemented()
 
     @classmethod
-    def normalize_raw_whois(cls, whois_data):
+    def normalize_raw_whois(cls, raw_whois):
         '''
         '''
         raise NotImplemented()
@@ -22,7 +22,7 @@ class Resolver:
         )
 
         normalized_whois = cls.normalize_raw_whois(
-            whois_data=raw_whois['whois_data'],
+            raw_whois=raw_whois,
         )
 
         return normalized_whois

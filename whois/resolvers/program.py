@@ -54,7 +54,6 @@ class Resolver(_resolver.Resolver):
         )
         is_posix = os.name == 'posix'
 
-        completed_process = None
         try:
             completed_process = subprocess.run(
                 args=shlex.split(command, posix=is_posix),
@@ -65,59 +64,38 @@ class Resolver(_resolver.Resolver):
         except subprocess.TimeoutExpired as exception:
             raise _resolver.WhoisTimedOut()
 
-        if completed_process:
-            output = completed_process.stdout
-
+        output = completed_process.stdout
         whois_raw_data = output.decode('utf-8', errors='ignore')
 
-        process_timed_out = completed_process is None
-
-        return {
-            'whois_data': whois_raw_data,
-            'timed_out': process_timed_out,
-        }
+        return whois_raw_data
 
     @classmethod
-    def remove_program_banner(cls, whois_data):
+    def remove_program_banner(cls, raw_whois):
         '''
         '''
-        whois_data = re.sub(
+        raw_whois = re.sub(
             pattern='.*Mark Russinovich',
             repl='',
-            string=whois_data,
+            string=raw_whois,
             flags=re.DOTALL,
         )
-        whois_data = re.sub(
+        raw_whois = re.sub(
             pattern='^Connecting to.*\.\.\.$',
             repl='',
-            string=whois_data,
+            string=raw_whois,
             flags=re.MULTILINE,
         )
 
-        return whois_data
+        return raw_whois
 
     @classmethod
-    def normalize_raw_whois(cls, whois_data):
+    def normalize_raw_whois(cls, raw_whois):
         '''
         '''
-        normalized_whois = whois_data
+        normalized_whois = raw_whois
 
         normalized_whois = normalized_whois.replace('\r\n', '\n')
         normalized_whois = cls.remove_program_banner(normalized_whois)
         normalized_whois = normalized_whois.strip()
-
-        return normalized_whois
-
-    @classmethod
-    def resolve(cls, domain):
-        '''
-        '''
-        raw_whois = cls.get_raw_whois(
-            domain=domain,
-        )
-
-        normalized_whois = cls.normalize_raw_whois(
-            whois_data=raw_whois['whois_data'],
-        )
 
         return normalized_whois
