@@ -10,7 +10,7 @@ partial_data_tlds = [
     'name',
     'net.pe',
     'nl',
-    'off.ai'
+    'off.ai',
     'tk',
     'tm',
     'cl',
@@ -23,4 +23,9 @@ partial_data_tlds = [
     'gen.nz',
     'co.nz',
     'pe',
+    'com.im',
+    'org.pe',
+    'com.fj',
+    'co.im',
+    'net.au',
 ]
