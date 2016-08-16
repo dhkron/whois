@@ -57,9 +57,9 @@ class GenericParserTestCase(unittest.TestCase):
             try:
                 whois_querier = querier.Querier()
                 parsed = whois_querier.query(domain)
-            except Exception as exc:
+            except Exception as exception:
                 print(domain)
-                print(''.join(traceback.format_tb(exc.__traceback__)))
+                print(''.join(traceback.format_tb(exception.__traceback__)))
 
             if parsed['creation_date']:
                 # print(str(parsed).encode('ascii', 'ignore'))
