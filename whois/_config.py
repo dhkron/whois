@@ -28,4 +28,5 @@ partial_data_tlds = [
     'com.fj',
     'co.im',
     'net.au',
+    'cd',
 ]

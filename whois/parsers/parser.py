@@ -23,6 +23,8 @@ class Parser:
         'connection reset by peer',
         'the number of requests per client per time interval',
         'you have exceeded this limit',
+        'please slow down and try again later.',
+        'blacklisted: you have exceeded the query limit for your network or ip address',
     ]
 
     @classmethod
