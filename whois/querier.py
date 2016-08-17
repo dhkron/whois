@@ -55,22 +55,27 @@ class Querier:
                 raw_whois='',
             )
 
-        try:
-            parsed_whois = self.whois_parser.parse(
+        parsed_whois = self.whois_parser.parse(
+            raw_whois=raw_whois,
+        )
+
+        if parsed_whois['creation_date'] is None:
+            error_string = self.whois_parser.has_error(
                 raw_whois=raw_whois,
             )
-        except parsers.parser.DomainNotExists:
-            raise DomainNotExists(
-                raw_whois=raw_whois,
-            )
-        except parsers.parser.NoWhoisServer:
-            raise NoWhoisServer(
-                raw_whois=raw_whois,
-            )
-        except parsers.parser.Blocked:
-            raise Blocked(
-                raw_whois=raw_whois,
-            )
+
+            if error_string == 'domain_not_exists':
+                raise DomainNotExists(
+                    raw_whois=raw_whois,
+                )
+            elif error_string == 'no_whois_server':
+                raise NoWhoisServer(
+                    raw_whois=raw_whois,
+                )
+            elif error_string == 'blocked':
+                raise Blocked(
+                    raw_whois=raw_whois,
+                )
 
         if parsed_whois['creation_date'] is None and parsed_whois['updated_date'] is None:
             if domain_parts['suffix'] not in _config.partial_data_tlds:

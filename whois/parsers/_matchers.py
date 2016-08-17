@@ -200,6 +200,11 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
+        matcher.Regex(
+            pattern=r'record created[:]?\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
     ],
     'expiration_date': [
         matcher.Regex(
