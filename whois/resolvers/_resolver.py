@@ -28,5 +28,13 @@ class Resolver:
         return normalized_whois
 
 
-class WhoisTimedOut(Exception):
+class ResolverException(Exception):
+    pass
+
+
+class WhoisTimedOut(ResolverException):
+    pass
+
+
+class ErrorOccured(ResolverException):
     pass

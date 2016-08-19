@@ -36,8 +36,9 @@ class Resolver(_resolver.Resolver):
                     )
                 )
 
-            original_permissions = os.stat(program)
-            os.chmod(program, original_permissions.st_mode | stat.S_IXGRP | stat.S_IXUSR | stat.S_IXOTH)
+            if not os.access(program, os.X_OK):
+                original_permissions = os.stat(program)
+                os.chmod(program, original_permissions.st_mode | stat.S_IXGRP | stat.S_IXUSR | stat.S_IXOTH)
         elif current_os == 'Windows':
             program = os.path.abspath(
                 path=os.path.join(
@@ -58,14 +59,25 @@ class Resolver(_resolver.Resolver):
             completed_process = subprocess.run(
                 args=shlex.split(command, posix=is_posix),
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                stderr=subprocess.PIPE,
                 timeout=timeout,
             )
         except subprocess.TimeoutExpired as exception:
             raise _resolver.WhoisTimedOut()
 
         output = completed_process.stdout
-        whois_raw_data = output.decode('utf-8', errors='ignore')
+        whois_raw_data = output.decode(
+            encoding='utf-8',
+            errors='ignore',
+        )
+        stderr = completed_process.stderr
+        error_string = stderr.decode(
+            encoding='utf-8',
+            errors='ignore',
+        )
+
+        if whois_raw_data == '' and error_string != '':
+            raise _resolver.ErrorOccured(error_string)
 
         return whois_raw_data
 
