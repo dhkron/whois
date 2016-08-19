@@ -21,5 +21,5 @@ class Parser:
         '''
         '''
         error_string = parsers.parser.Parser.has_error(raw_whois)
-        
+
         return error_string
