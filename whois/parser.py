@@ -16,3 +16,10 @@ class Parser:
             return parsed_data
 
         return None
+
+    def has_error(self, raw_whois):
+        '''
+        '''
+        error_string = parsers.parser.Parser.has_error(raw_whois)
+        
+        return error_string

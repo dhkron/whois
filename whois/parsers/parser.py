@@ -33,24 +33,6 @@ class Parser:
         '''
         parsed_whois = {}
 
-        has_whois_server = cls.has_whois_server(
-            raw_whois=raw_whois,
-        )
-        if not has_whois_server:
-            raise NoWhoisServer()
-
-        is_domain_exist = cls.is_domain_exist(
-            raw_whois=raw_whois,
-        )
-        if not is_domain_exist:
-            raise DomainNotExists()
-
-        is_blocked = cls.is_blocked(
-            raw_whois=raw_whois,
-        )
-        if is_blocked:
-            raise Blocked()
-
         creation_date = cls.extract_creation_date(
             raw_whois=raw_whois,
         )
@@ -77,6 +59,28 @@ class Parser:
         parsed_whois['registrant'] = registrant
 
         return parsed_whois
+
+    @classmethod
+    def has_error(cls, raw_whois):
+        has_whois_server = cls.has_whois_server(
+            raw_whois=raw_whois,
+        )
+        if not has_whois_server:
+            return 'no_whois_server'
+
+        is_domain_exist = cls.is_domain_exist(
+            raw_whois=raw_whois,
+        )
+        if not is_domain_exist:
+            return 'domain_not_exists'
+
+        is_blocked = cls.is_blocked(
+            raw_whois=raw_whois,
+        )
+        if is_blocked:
+            return 'blocked'
+
+        return 'no_error'
 
     @classmethod
     def is_blocked(cls, raw_whois):
