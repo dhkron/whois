@@ -1,8 +1,6 @@
 from .. import querier
 
 import unittest
-import time
-import traceback
 
 
 class TestCase(unittest.TestCase):
@@ -15,8 +13,6 @@ class TestCase(unittest.TestCase):
             'kjlasdnflkjandsf.asdfasdf.asdf'
         )
 
-
-class TestCase(unittest.TestCase):
     def test_blocked(self):
         whois_querier = querier.Querier()
 
