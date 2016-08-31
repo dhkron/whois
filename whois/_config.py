@@ -33,3 +33,7 @@ partial_data_tlds = [
     'cf',
     'com.au',
 ]
+
+blocked_and_notexists_conflict_preference = {
+    'fr': 'blocked',
+}

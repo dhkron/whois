@@ -1,5 +1,3 @@
-import re
-
 from . import resources
 from . import _matchers
 from . import _converters
@@ -9,23 +7,8 @@ class Parser:
     '''
     '''
     domain_not_exist_patterns = resources.patterns.domain_not_exist_patterns
-
-    has_no_whois_server_messages = [
-        'no whois server',
-    ]
-
-    blocked_whois_request_messages = [
-        'blacklist',
-        'connection refused',
-        'network is unreachable',
-        'lookup quota exceeded',
-        'your request could not be performed.',
-        'connection reset by peer',
-        'the number of requests per client per time interval',
-        'you have exceeded this limit',
-        'please slow down and try again later.',
-        'blacklisted: you have exceeded the query limit for your network or ip address',
-    ]
+    blocked_whois_request_patterns = resources.patterns.blocked_whois_request_patterns
+    has_no_whois_server_patterns = resources.patterns.has_no_whois_server_patterns
 
     @classmethod
     def parse(cls, raw_whois):
@@ -71,12 +54,16 @@ class Parser:
         is_domain_exist = cls.is_domain_exist(
             raw_whois=raw_whois,
         )
-        if not is_domain_exist:
-            return 'domain_not_exists'
-
         is_blocked = cls.is_blocked(
             raw_whois=raw_whois,
         )
+
+        if not is_domain_exist and is_blocked:
+            return 'domain_not_exists_or_blocked'
+
+        if not is_domain_exist:
+            return 'domain_not_exists'
+
         if is_blocked:
             return 'blocked'
 
@@ -86,8 +73,10 @@ class Parser:
     def is_blocked(cls, raw_whois):
         '''
         '''
-        for blocked_whois_request_message in cls.blocked_whois_request_messages:
-            if blocked_whois_request_message in raw_whois.lower():
+        for blocked_whois_request_pattern in cls.blocked_whois_request_patterns:
+            if blocked_whois_request_pattern.findall(
+                string=raw_whois,
+            ):
                 return True
         else:
             return False
@@ -96,8 +85,10 @@ class Parser:
     def has_whois_server(cls, raw_whois):
         '''
         '''
-        for has_no_whois_server_message in cls.has_no_whois_server_messages:
-            if has_no_whois_server_message in raw_whois.lower():
+        for has_no_whois_server_pattern in cls.has_no_whois_server_patterns:
+            if has_no_whois_server_pattern.findall(
+                string=raw_whois,
+            ):
                 return False
         else:
             return True
@@ -107,10 +98,8 @@ class Parser:
         '''
         '''
         for domain_not_exist_pattern in cls.domain_not_exist_patterns:
-            if re.search(
-                pattern=domain_not_exist_pattern,
-                string=raw_whois.lower(),
-                flags=re.IGNORECASE,
+            if domain_not_exist_pattern.findall(
+                string=raw_whois,
             ):
                 return False
         else:

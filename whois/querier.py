@@ -6,7 +6,6 @@ from . import _config
 from . import parser
 from . import resolver
 
-from . import parsers
 from . import resolvers
 
 
@@ -51,9 +50,7 @@ class Querier:
                 method=method,
             )
         except resolvers._resolver.WhoisTimedOut:
-            raise WhoisTimedOut(
-                raw_whois='',
-            )
+            raise WhoisTimedOut()
         except resolvers._resolver.ErrorOccured as exception:
             raise ErrorOccured()
 
@@ -66,7 +63,21 @@ class Querier:
                 raw_whois=raw_whois,
             )
 
-            if error_string == 'domain_not_exists':
+            if error_string == 'domain_not_exists_or_blocked':
+                if domain_parts['suffix'] in _config.blocked_and_notexists_conflict_preference:
+                    preference = _config.blocked_and_notexists_conflict_preference[domain_parts['suffix']]
+
+                    if preference == 'domain_not_exists':
+                        raise DomainNotExists(
+                            raw_whois=raw_whois,
+                        )
+                    elif preference == 'blocked':
+                        raise Blocked(
+                            raw_whois=raw_whois,
+                        )
+                else:
+                    raise BlockedAndNotexistConflict()
+            elif error_string == 'domain_not_exists':
                 raise DomainNotExists(
                     raw_whois=raw_whois,
                 )
@@ -93,7 +104,7 @@ class Querier:
 
 
 class WhoisResolverException(Exception):
-    def __init__(self, raw_whois):
+    def __init__(self, raw_whois=''):
         self.raw_whois = raw_whois
 
 
@@ -122,4 +133,8 @@ class ErrorOccured(WhoisResolverException):
 
 
 class InvalidDomain(WhoisResolverException):
+    pass
+
+
+class BlockedAndNotexistConflict(WhoisResolverException):
     pass
