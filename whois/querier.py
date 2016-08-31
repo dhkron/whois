@@ -51,9 +51,7 @@ class Querier:
                 method=method,
             )
         except resolvers._resolver.WhoisTimedOut:
-            raise WhoisTimedOut(
-                raw_whois='',
-            )
+            raise WhoisTimedOut()
         except resolvers._resolver.ErrorOccured as exception:
             raise ErrorOccured()
 
@@ -93,7 +91,7 @@ class Querier:
 
 
 class WhoisResolverException(Exception):
-    def __init__(self, raw_whois):
+    def __init__(self, raw_whois=''):
         self.raw_whois = raw_whois
 
 
