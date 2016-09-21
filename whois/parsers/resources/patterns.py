@@ -154,6 +154,10 @@ blocked_whois_request_patterns = [
         flags=re.IGNORECASE | re.MULTILINE,
     ),
     re.compile(
+        pattern=r'.*?WHOIS LIMIT EXCEEDED.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
         pattern=r'.*?connection refused.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
