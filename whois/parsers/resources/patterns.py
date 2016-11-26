@@ -197,6 +197,22 @@ blocked_whois_request_patterns = [
         pattern=r'.*?Too many requests\.\.\..*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
+    re.compile(
+        pattern=r'.*?queries per hour exceeded for your network.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?we will permanently block access from this network if queries continue.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?maximum query rate reached.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?please maintain at least 10-second time before starting another enquiry.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
 ]
 
 has_no_whois_server_patterns = [

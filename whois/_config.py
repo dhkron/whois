@@ -32,6 +32,7 @@ partial_data_tlds = [
     'om',
     'cf',
     'com.au',
+    'qa',
 ]
 
 blocked_and_notexists_conflict_preference = {

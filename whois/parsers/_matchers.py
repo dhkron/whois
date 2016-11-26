@@ -526,6 +526,11 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
+        matcher.Regex(
+            pattern=r'Registrar Name:\s+(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
     ],
     'registrant': [
         matcher.Regex(
@@ -720,6 +725,11 @@ matchers = {
         ),
         matcher.Regex(
             pattern=r'    Registrant:\n\n        Name:(?P<value>.+)        ',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
+            pattern=r'Registrant Contact Name:\s+(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
         ),
