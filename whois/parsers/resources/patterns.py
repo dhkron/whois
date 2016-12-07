@@ -213,6 +213,14 @@ blocked_whois_request_patterns = [
         pattern=r'.*?please maintain at least 10-second time before starting another enquiry.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
+    re.compile(
+        pattern=r'.*?You exceeded the maximum allowable number of whois lookups*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?No further queries can be done*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
 ]
 
 has_no_whois_server_patterns = [
