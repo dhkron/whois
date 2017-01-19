@@ -487,6 +487,11 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
+            pattern=r'Sponsoring Registrar:\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
             pattern=r'Registered through:\s?(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,

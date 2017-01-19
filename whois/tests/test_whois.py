@@ -4,9 +4,20 @@ import traceback
 import bs4
 import urllib.request
 import subprocess
+import tempfile
+import os
 import shlex
 
 from .. import querier
+
+
+tld_extractor = tldextract.tldextract.TLDExtract(
+    cache_file=os.path.join(
+        tempfile.gettempdir(),
+        'tld_extract_data',
+    ),
+    include_psl_private_domains=True,
+)
 
 
 def get_domains():
@@ -24,7 +35,7 @@ def get_domains():
 
 def check_domain(domain):
     try:
-        tld = tldextract.extract(domain)
+        tld = tld_extractor(domain)
         q = querier.Querier()
         try:
             result = q.query(domain.rstrip())
@@ -70,7 +81,7 @@ def test_who_is():
     # checkedTLDs = []
     # domains_to_check = []
     # for domain in get_domains():
-    #     tld = tldextract.extract(domain)
+    #     tld = tld_extractor(domain)
     #     if tld.suffix not in checkedTLDs:
     #         checkedTLDs.append(tld.suffix)
     #         domains_to_check.append(domain)

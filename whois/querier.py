@@ -16,15 +16,16 @@ class Querier:
         self.whois_parser = parser.Parser()
         self.resolver = resolver.Resolver()
 
-        self.tldextract = tldextract.tldextract.TLDExtract(
-            os.path.join(
+        self.tld_extractor = tldextract.tldextract.TLDExtract(
+            cache_file=os.path.join(
                 tempfile.gettempdir(),
                 'tld_extract_data',
             ),
+            include_psl_private_domains=True,
         )
 
     def get_domain_parts(self, domain):
-        domain_extracted = self.tldextract(domain)
+        domain_extracted = self.tld_extractor(domain)
 
         domain_part = domain_extracted.domain
         suffix_part = domain_extracted.suffix
