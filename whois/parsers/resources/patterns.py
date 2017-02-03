@@ -214,11 +214,19 @@ blocked_whois_request_patterns = [
         flags=re.IGNORECASE | re.MULTILINE,
     ),
     re.compile(
-        pattern=r'.*?You exceeded the maximum allowable number of whois lookups*?',
+        pattern=r'.*?You exceeded the maximum allowable number of whois lookups.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
     re.compile(
-        pattern=r'.*?No further queries can be done*?',
+        pattern=r'.*?No further queries can be done.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?You have reached configured rate limit.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Domain is not available or is reserved by the registry.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
 ]
