@@ -4,6 +4,8 @@ import os
 import platform
 import re
 import stat
+import select
+import time
 
 from . import _resolver
 
@@ -15,8 +17,6 @@ class Resolver(_resolver.Resolver):
 
     @classmethod
     def get_raw_whois(cls, domain):
-        timeout = 10
-
         current_os = platform.system()
         current_architecture = platform.architecture()
         current_architecture_bits = current_architecture[0]
@@ -55,31 +55,81 @@ class Resolver(_resolver.Resolver):
         )
         is_posix = os.name == 'posix'
 
+        raw_whois = cls.get_command_output(
+            command=command,
+            is_posix=is_posix,
+            timeout=10,
+        )
+
+        return raw_whois
+
+    @classmethod
+    def get_command_output(
+        cls,
+        command,
+        is_posix,
+        timeout=10,
+    ):
+        process = None
+        start_time = time.time()
+
         try:
-            completed_process = subprocess.run(
-                args=shlex.split(command, posix=is_posix),
+            poller = select.epoll()
+
+            process = subprocess.Popen(
+                args=shlex.split(
+                    s=command,
+                    posix=is_posix,
+                ),
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=timeout,
+                stderr=subprocess.STDOUT,
             )
-        except subprocess.TimeoutExpired as exception:
-            raise _resolver.WhoisTimedOut()
 
-        output = completed_process.stdout
-        whois_raw_data = output.decode(
-            encoding='utf-8',
-            errors='ignore',
-        )
-        stderr = completed_process.stderr
-        error_string = stderr.decode(
-            encoding='utf-8',
-            errors='ignore',
-        )
+            poller.register(process.stdout, select.EPOLLHUP | select.EPOLLIN)
 
-        if whois_raw_data == '' and error_string != '':
-            raise _resolver.ErrorOccured(error_string)
+            all_output = ''
+            while start_time + timeout > time.time():
+                for fileno, event in poller.poll(
+                    timeout=1,
+                ):
+                    if event & select.EPOLLHUP:
+                        poller.unregister(
+                            fd=fileno,
+                        )
 
-        return whois_raw_data
+                        break
+
+                    output = process.stdout.read()
+                    output = output.decode(
+                        encoding='utf-8',
+                        errors='ignore',
+                    )
+                    all_output += output
+
+                try:
+                    process.wait(0)
+
+                    break
+                except subprocess.TimeoutExpired:
+                    pass
+        finally:
+            if process is not None:
+                process.terminate()
+
+                output = process.stdout.read()
+                output = output.decode(
+                    encoding='utf-8',
+                    errors='ignore',
+                )
+                all_output += output
+
+                process.kill()
+
+            empty_whois_result = all_output.strip() == ''
+            if empty_whois_result:
+                raise _resolver.WhoisTimedOut()
+            else:
+                return all_output.strip()
 
     @classmethod
     def remove_program_banner(cls, raw_whois):

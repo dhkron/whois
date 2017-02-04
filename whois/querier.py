@@ -52,8 +52,8 @@ class Querier:
             )
         except resolvers._resolver.WhoisTimedOut:
             raise WhoisTimedOut()
-        except resolvers._resolver.ErrorOccured as exception:
-            raise ErrorOccured()
+        except Exception as exception:
+            raise ErrorOccured() from exception
 
         parsed_whois = self.whois_parser.parse(
             raw_whois=raw_whois,

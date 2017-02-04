@@ -34,7 +34,3 @@ class ResolverException(Exception):
 
 class WhoisTimedOut(ResolverException):
     pass
-
-
-class ErrorOccured(ResolverException):
-    pass
