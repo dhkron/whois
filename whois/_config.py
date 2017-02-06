@@ -1,4 +1,4 @@
-partial_data_tlds = [
+no_dates_tlds = [
     'io',
     'tm',
     'aw',
@@ -33,6 +33,14 @@ partial_data_tlds = [
     'cf',
     'com.au',
     'qa',
+    'com.qa',
+    'name.qa',
+    'sch.qa',
+    'gov.qa',
+    'mil.qa',
+    'org.qa',
+    'edu.qa',
+    'net.qa',
 ]
 
 blocked_and_notexists_conflict_preference = {

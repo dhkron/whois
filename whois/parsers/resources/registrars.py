@@ -1,5 +1,6 @@
 import re
 import os
+import Levenshtein
 
 
 class Registrars:
@@ -46,4 +47,15 @@ class Registrars:
             if edited_subject in registrar['edited'].lower():
                 return registrar['original']
 
-        return None
+        most_close_registrar = ''
+        most_close_registrar_distance_ratio = 0
+        for registrar in cls.registrars:
+            registrar_distance_ratio = Levenshtein.ratio(
+                edited_subject,
+                registrar['edited'],
+            )
+            if registrar_distance_ratio > most_close_registrar_distance_ratio:
+                most_close_registrar = registrar['original']
+                most_close_registrar_distance_ratio = registrar_distance_ratio
+
+        return most_close_registrar

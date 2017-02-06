@@ -229,6 +229,14 @@ blocked_whois_request_patterns = [
         pattern=r'.*?Domain is not available or is reserved by the registry.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
+    re.compile(
+        pattern=r'.*?query_status: 440 Request Denied.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?You have exceeded allowed connection rate.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
 ]
 
 has_no_whois_server_patterns = [

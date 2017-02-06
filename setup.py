@@ -12,6 +12,7 @@ setuptools.setup(
         'tldextract',
         'python-dateutil',
         'pytz',
+        'Levenshtein',
     ],
     packages=setuptools.find_packages(),
     package_data={
