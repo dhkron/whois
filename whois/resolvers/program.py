@@ -126,7 +126,9 @@ class Resolver(_resolver.Resolver):
                 process.kill()
 
             empty_whois_result = all_output.strip() == ''
-            if empty_whois_result:
+            timedout_whois_result = all_output.strip() == 'Interrupted by signal 15...'
+
+            if empty_whois_result or timedout_whois_result:
                 raise _resolver.WhoisTimedOut()
             else:
                 return all_output.strip()
