@@ -146,6 +146,10 @@ domain_not_exist_patterns = [
         pattern=r'.*?name or service not known.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
+    re.compile(
+        pattern=r'.*?Invalid query or domain name not known*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
 ]
 
 blocked_whois_request_patterns = [
