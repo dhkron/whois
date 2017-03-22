@@ -119,6 +119,10 @@ domain_not_exist_patterns = [
         flags=re.IGNORECASE | re.MULTILINE,
     ),
     re.compile(
+        pattern=r'.*?This domain name has not been registered..*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
         pattern=r'.*?Status: Not Registered.*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
