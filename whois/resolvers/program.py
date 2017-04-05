@@ -115,6 +115,10 @@ class Resolver(_resolver.Resolver):
         finally:
             if process is not None:
                 process.terminate()
+                os.waitpid(
+                    process.pid,
+                    0,
+                )
 
                 output = process.stdout.read()
                 output = output.decode(
