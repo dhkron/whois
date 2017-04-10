@@ -115,10 +115,14 @@ class Resolver(_resolver.Resolver):
         finally:
             if process is not None:
                 process.terminate()
-                os.waitpid(
-                    process.pid,
-                    0,
-                )
+
+                try:
+                    os.waitpid(
+                        process.pid,
+                        0,
+                    )
+                except ChildProcessError:
+                    pass
 
                 output = process.stdout.read()
                 output = output.decode(
