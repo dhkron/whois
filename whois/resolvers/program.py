@@ -131,7 +131,10 @@ class Resolver(_resolver.Resolver):
                 )
                 all_output += output
 
-                process.kill()
+                try:
+                    process.kill()
+                except ProcessLookupError:
+                    pass
 
             empty_whois_result = all_output.strip() == ''
             timedout_whois_result = all_output.strip() == 'Interrupted by signal 15...'
