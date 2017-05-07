@@ -48,4 +48,9 @@ no_dates_tlds = [
 
 blocked_and_notexists_conflict_preference = {
     'fr': 'blocked',
+    'tm.fr': 'blocked',
+    'pm': 'blocked',
+    'wf': 'blocked',
+    're': 'blocked',
+    'tf': 'blocked',
 }

@@ -154,6 +154,18 @@ domain_not_exist_patterns = [
         pattern=r'.*?Invalid query or domain name not known*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
+    re.compile(
+        pattern=r'.*?Status: invalid*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?the domain name contains too many parts*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Temporary failure in name resolution*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
 ]
 
 blocked_whois_request_patterns = [
@@ -243,6 +255,50 @@ blocked_whois_request_patterns = [
     ),
     re.compile(
         pattern=r'.*?You have exceeded allowed connection rate.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?441 Request Blocked*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Cannot process your search request.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Your request is being rate limited.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Queried interval is too short.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Quota exceeded*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Query limit exceeded*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Service is not available*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Daily whois request limit*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?The WHOIS server is busy now, please try later.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?Could not connect to whois server.*?',
+        flags=re.IGNORECASE | re.MULTILINE,
+    ),
+    re.compile(
+        pattern=r'.*?maximum number of requests per second exceeded*?',
         flags=re.IGNORECASE | re.MULTILINE,
     ),
 ]
