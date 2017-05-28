@@ -477,6 +477,11 @@ matchers = {
             flags=re.IGNORECASE,
         ),
         matcher.Regex(
+            pattern=r'registrar_name:\s*(?P<value>.+)',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(
             pattern=r'Registrar:\s*(?P<value>.+)',
             group='value',
             flags=re.IGNORECASE,
