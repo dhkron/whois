@@ -41,6 +41,13 @@ class Parser:
         )
         parsed_whois['registrant'] = registrant
 
+        parsed_whois['additional'] = {}
+
+        abuse_email = cls.extract_abuse_email(
+            raw_whois=raw_whois,
+        )
+        parsed_whois['additional']['abuse_email'] = abuse_email
+
         return parsed_whois
 
     @classmethod
@@ -160,6 +167,15 @@ class Parser:
         )
 
         return registrant
+
+    @classmethod
+    def extract_abuse_email(cls, raw_whois):
+        abuse_email = cls.extract(
+            attribute_name='abuse_email',
+            subject=raw_whois,
+        )
+
+        return abuse_email
 
     @classmethod
     def extract(cls, attribute_name, subject):

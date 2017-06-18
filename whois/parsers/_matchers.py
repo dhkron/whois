@@ -743,5 +743,17 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
+    ],
+    'abuse_email': [
+        matcher.Regex(
+            pattern=r'Registrar Abuse Contact Email: (?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+        matcher.Regex(  # jcbressources.fr, queried 2017-05-29
+            pattern=r'trouble:\s+Spam:\s*mailto:(?P<value>.+)\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
     ]
 }
