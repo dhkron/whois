@@ -3,4 +3,4 @@ lxml
 python-dateutil
 pytz
 requests
-tldextra
+tldextract
