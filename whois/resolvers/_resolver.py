@@ -6,14 +6,14 @@ class Resolver:
         cls,
         domain,
     ):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     @classmethod
     def normalize_raw_whois(
         cls,
         raw_whois,
     ):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     @classmethod
     def resolve(

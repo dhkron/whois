@@ -26,7 +26,7 @@ class DateRegex:
             year = match.group('year')
             month = match.group('month')
             day = match.group('day')
-        except:
+        except Exception:
             return None
 
         try:

@@ -12,9 +12,9 @@ class Resolver:
                 return resolver.resolve(
                     domain=domain,
                 )
-        else:
-            raise Exception(
-                'unknown resolver of method "{method}"'.format(
-                    method=method,
-                )
+
+        raise Exception(
+            'unknown resolver of method "{method}"'.format(
+                method=method,
             )
+        )

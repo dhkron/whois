@@ -2,13 +2,9 @@ from . import parsers
 
 
 class Parser:
-    def __init__(
-        self,
-    ):
-        pass
-
+    @classmethod
     def parse(
-        self,
+        cls,
         raw_whois,
     ):
         parsed_data = parsers.parser.Parser.parse(raw_whois)
@@ -18,8 +14,9 @@ class Parser:
 
         return None
 
+    @classmethod
     def has_error(
-        self,
+        cls,
         raw_whois,
     ):
         error_string = parsers.parser.Parser.has_error(raw_whois)

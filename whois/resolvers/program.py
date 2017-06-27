@@ -74,6 +74,7 @@ class Resolver(
         timeout=10,
     ):
         process = None
+        all_output = ''
         start_time = time.time()
 
         try:
@@ -90,7 +91,6 @@ class Resolver(
 
             poller.register(process.stdout, select.EPOLLHUP | select.EPOLLIN)
 
-            all_output = ''
             while start_time + timeout > time.time():
                 for fileno, event in poller.poll(
                     timeout=1,
@@ -139,13 +139,13 @@ class Resolver(
                 except ProcessLookupError:
                     pass
 
-            empty_whois_result = all_output.strip() == ''
-            timedout_whois_result = all_output.strip() == 'Interrupted by signal 15...'
+        empty_whois_result = all_output.strip() == ''
+        timedout_whois_result = all_output.strip() == 'Interrupted by signal 15...'
 
-            if empty_whois_result or timedout_whois_result:
-                raise _resolver.WhoisTimedOut()
-            else:
-                return all_output.strip()
+        if empty_whois_result or timedout_whois_result:
+            raise _resolver.WhoisTimedOut()
+        else:
+            return all_output.strip()
 
     @classmethod
     def remove_program_banner(
