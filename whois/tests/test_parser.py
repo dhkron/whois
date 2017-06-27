@@ -385,17 +385,20 @@ class ParserTestCase(
             'wordpress.org',
             'worldbank.org',
         ):
-            whois_querier = querier.Querier()
-            parsed = whois_querier.query(
-                domain=domain,
-            )
+            try:
+                whois_querier = querier.Querier()
+                parsed = whois_querier.query(
+                    domain=domain,
+                )
 
-            self.assertNotEqual(
-                first=parsed['creation_date'],
-                second=None,
-            )
+                self.assertNotEqual(
+                    first=parsed['creation_date'],
+                    second=None,
+                )
 
-            time.sleep(0.5)
+                time.sleep(0.5)
+            except querier.Blocked:
+                time.sleep(10)
 
     def test_invalid_domain(
         self,
