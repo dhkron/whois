@@ -15,6 +15,7 @@ setuptools.setup(
         'pytz',
         'requests',
         'tldextract',
+        'cssselect',
     ],
     packages=setuptools.find_packages(),
     package_data={
