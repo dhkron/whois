@@ -85,8 +85,8 @@ class Parser:
                 string=raw_whois,
             ):
                 return True
-        else:
-            return False
+
+        return False
 
     @classmethod
     def has_whois_server(cls, raw_whois):
@@ -97,8 +97,8 @@ class Parser:
                 string=raw_whois,
             ):
                 return False
-        else:
-            return True
+
+        return True
 
     @classmethod
     def is_domain_exist(cls, raw_whois):
@@ -109,8 +109,8 @@ class Parser:
                 string=raw_whois,
             ):
                 return False
-        else:
-            return True
+
+        return True
 
     @classmethod
     def extract_creation_date(cls, raw_whois):
