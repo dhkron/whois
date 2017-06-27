@@ -1,4 +1,4 @@
-Levenshtein
+python-Levenshtein
 lxml
 python-dateutil
 pytz

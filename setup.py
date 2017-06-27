@@ -9,7 +9,7 @@ setuptools.setup(
     description=('A fast, simple, and comprehensive whois library'),
     zip_safe=False,
     install_requires=[
-        'Levenshtein',
+        'python-Levenshtein',
         'lxml',
         'python-dateutil',
         'pytz',
