@@ -3,10 +3,16 @@ import dateutil.parser
 
 
 class DateRegex:
-    def __init__(self, pattern):
+    def __init__(
+        self,
+        pattern,
+    ):
         self.pattern = pattern
 
-    def convert(self, date_string):
+    def convert(
+        self,
+        date_string,
+    ):
         match = re.search(
             pattern=self.pattern,
             string=date_string,
@@ -41,10 +47,15 @@ class DateRegex:
 
 
 class DateGeneric:
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         pass
 
-    def convert(self, date_string):
+    def convert(
+        self,
+        date_string,
+    ):
         try:
             date_object = dateutil.parser.parse(
                 timestr=date_string,
@@ -59,12 +70,13 @@ class DateGeneric:
 
 
 class Dummy:
-    '''
-    '''
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         pass
 
-    def convert(self, original_string):
-        '''
-        '''
+    def convert(
+        self,
+        original_string,
+    ):
         return original_string

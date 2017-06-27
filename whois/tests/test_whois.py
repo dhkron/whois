@@ -1,172 +1,172 @@
-import concurrent.futures
-import tldextract
-import traceback
-import bs4
-import urllib.request
-import subprocess
-import tempfile
-import os
-import shlex
+# import concurrent.futures
+# import tldextract
+# import traceback
+# import bs4
+# import urllib.request
+# import subprocess
+# import tempfile
+# import os
+# import shlex
 
-from .. import querier
-
-
-tld_extractor = tldextract.tldextract.TLDExtract(
-    cache_file=os.path.join(
-        tempfile.gettempdir(),
-        'tld_extract_data',
-    ),
-    include_psl_private_domains=True,
-)
+# from .. import querier
 
 
-def get_domains():
-    with open('/home/uri/Downloads/new.txt') as f:
-        content = f.readlines()
-
-    for domain in content:
-        yield domain
-
-    # with open('/home/uri/Downloads/top-1m.csv') as csvfile:
-    #     spamreader = csv.reader(csvfile, delimiter=',')
-    #     for row in spamreader:
-    #         yield row[1]
+# tld_extractor = tldextract.tldextract.TLDExtract(
+#     cache_file=os.path.join(
+#         tempfile.gettempdir(),
+#         'tld_extract_data',
+#     ),
+#     include_psl_private_domains=True,
+# )
 
 
-def check_domain(domain):
-    try:
-        tld = tld_extractor(domain)
-        q = querier.Querier()
-        try:
-            result = q.query(domain.rstrip())
-        except querier.NoWhoisServer:
-            print("NoWhoisServer " + domain.rstrip())
-            return
-        except querier.DomainNotExists:
-            print("DomainDoesNotExist. " + domain.rstrip())
-            return
-        except querier.ParsingError:
-            print('Bad Domain. No creation_date and no updated_date ' + domain.rstrip())
-            return
-        except querier.Blocked:
-            print('Blocked: ' + domain.rstrip())
-            return
-        except querier.WhoisTimedOut:
-            print('WhoisTimeout: ' + domain.rstrip())
-            return
-        except querier.DomainNotExists:
-            print('Domain does not exists' + domain.rstrip())
-            return
-        if not result['raw_whois']:
-            print("Bad Domain. A raw key was not present. " + domain.rstrip())
+# def get_domains():
+#     with open('/home/uri/Downloads/new.txt') as f:
+#         content = f.readlines()
 
-        try:
-            print("Good Domain. " + domain.rstrip() + " " + result['creation_date'].strftime("%d/%m/%y"))
-            if result['registrant']:
-                print(result['registrant'])
-        except Exception as ex:
-            if result['updated_date']:
-                print("Good Domain With Updated Date Only. " + domain.rstrip() + " " + result['updated_date'].strftime("%d/%m/%y"))
-            else:
-                print("Bad Domain. Not time given. " + domain.rstrip())
-    except Exception as ex:
-        traceback.print_exc()
-        if "has no whois server" in str(ex):
-            print("Skipped domain. " + tld.suffix)
-        else:
-            print("Bad Domain. Who Is did not succeed. " + domain.rstrip())
+#     for domain in content:
+#         yield domain
+
+#     # with open('/home/uri/Downloads/top-1m.csv') as csvfile:
+#     #     spamreader = csv.reader(csvfile, delimiter=',')
+#     #     for row in spamreader:
+#     #         yield row[1]
 
 
-def test_who_is():
-    # checkedTLDs = []
-    # domains_to_check = []
-    # for domain in get_domains():
-    #     tld = tld_extractor(domain)
-    #     if tld.suffix not in checkedTLDs:
-    #         checkedTLDs.append(tld.suffix)
-    #         domains_to_check.append(domain)
+# def check_domain(domain):
+#     try:
+#         tld = tld_extractor(domain)
+#         q = querier.Querier()
+#         try:
+#             result = q.query(domain.rstrip())
+#         except querier.NoWhoisServer:
+#             print("NoWhoisServer " + domain.rstrip())
+#             return
+#         except querier.DomainNotExists:
+#             print("DomainDoesNotExist. " + domain.rstrip())
+#             return
+#         except querier.ParsingError:
+#             print('Bad Domain. No creation_date and no updated_date ' + domain.rstrip())
+#             return
+#         except querier.Blocked:
+#             print('Blocked: ' + domain.rstrip())
+#             return
+#         except querier.WhoisTimedOut:
+#             print('WhoisTimeout: ' + domain.rstrip())
+#             return
+#         except querier.DomainNotExists:
+#             print('Domain does not exists' + domain.rstrip())
+#             return
+#         if not result['raw_whois']:
+#             print("Bad Domain. A raw key was not present. " + domain.rstrip())
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        # random.shuffle(domains_to_check)
-        for domain in get_domains():
-            executor.submit(check_domain, domain)
-
-
-class WhoIsServerListHandler(object):
-    def __init__(self, url):
-        self.url = url
-        self.page = urllib.request.urlopen(url).read()
-        self.mapTLDToDomainServer()
-
-    def parseTLD(self, tld):
-        TLDInfo = dict()
-
-        if 'name' in tld.attrs:
-            TLDInfo['name'] = tld.attrs['name']
-
-        TLDInfo['source'] = tld.findChildren('source')[0].string
-        TLDInfo['created'] = tld.findChildren('created')[0].string
-        TLDInfo['changed'] = tld.findChildren('changed')[0].string
-        TLDInfo['state'] = tld.findChildren('state')[0].string
-
-        return TLDInfo
-
-    def mapTLDToDomainServer(self):
-        soup = bs4.BeautifulSoup(self.page, "lxml")
-        tlds = soup.findAll('domain')
-        for tld in tlds:
-            TLDInfo = self.parseTLD(tld)
-            print(TLDInfo)
-
-
-def show_raw_whois():
-    no_creation_date = []
-    not_exists = []
-    to_fix = []
-    with open('/home/uri/Desktop/Bad4.txt') as f:
-        content = f.readlines()
-
-    for domain in content:
-        try:
-            print("\n\n\n\nRunning " + "whois " + domain + "\n\n\n\n")
-            completed_process = subprocess.run(
-                        args=shlex.split("whois " + domain.rstrip(), posix=True),
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                        timeout=10,
-                        )
-            sout = completed_process.stdout
-            print(sout.decode())
-            ans = input("To which list  " + domain.rstrip() + " belong?")
-            if ans == 'd':
-                no_creation_date.append(domain.rstrip())
-                continue
-            if ans == 'e':
-                not_exists.append(domain.rstrip())
-                continue
-            if ans == 'save':
-                # no_creation_date_file = open('/home/uri/Desktop/no_creation_date.txt', "w")
-                # not_exists_file = open('/home/uri/Desktop/not_exists.txt', "w")
-                # to_fix_file = open('/home/uri/Desktop/to_fix.txt', "w")
-                #
-                # no_creation_date_file.write("\n".join(no_creation_date))
-                # not_exists_file.write("\n".join(not_exists))
-                # to_fix_file.write("\n".join(to_fix))
-                print("\n\n\nNo creation date: \n\n\n" + "\n".join(no_creation_date))
-                print("\n\n\nto_fix: \n\n\n" + "\n".join(to_fix))
-                print("\n\n\nnot_exists: \n\n\n" + "\n".join(not_exists))
-                continue
-            else:
-                to_fix.append(ans + " | " + domain.rstrip())
-                continue
-        except Exception as ex:
-            not_exists.append(domain.rstrip())
+#         try:
+#             print("Good Domain. " + domain.rstrip() + " " + result['creation_date'].strftime("%d/%m/%y"))
+#             if result['registrant']:
+#                 print(result['registrant'])
+#         except Exception as ex:
+#             if result['updated_date']:
+#                 print("Good Domain With Updated Date Only. " + domain.rstrip() + " " + result['updated_date'].strftime("%d/%m/%y"))
+#             else:
+#                 print("Bad Domain. Not time given. " + domain.rstrip())
+#     except Exception as ex:
+#         traceback.print_exc()
+#         if "has no whois server" in str(ex):
+#             print("Skipped domain. " + tld.suffix)
+#         else:
+#             print("Bad Domain. Who Is did not succeed. " + domain.rstrip())
 
 
-if "__main__" == __name__:
-    # ok = WhoIsServerListHandler('https://raw.githubusercontent.com/whois-server-list/whois-server-list/master/whois-server-list.xml')
-    # ok.mapTLDToDomainServer()
-    test_who_is()
-    # show_raw_whois()
-    # import ipdb; ipdb.set_trace()
-    # check_domain('abalfazlschools.ir')
+# def test_who_is():
+#     # checkedTLDs = []
+#     # domains_to_check = []
+#     # for domain in get_domains():
+#     #     tld = tld_extractor(domain)
+#     #     if tld.suffix not in checkedTLDs:
+#     #         checkedTLDs.append(tld.suffix)
+#     #         domains_to_check.append(domain)
+
+#     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+#         # random.shuffle(domains_to_check)
+#         for domain in get_domains():
+#             executor.submit(check_domain, domain)
+
+
+# class WhoIsServerListHandler(object):
+#     def __init__(self, url):
+#         self.url = url
+#         self.page = urllib.request.urlopen(url).read()
+#         self.mapTLDToDomainServer()
+
+#     def parseTLD(self, tld):
+#         TLDInfo = dict()
+
+#         if 'name' in tld.attrs:
+#             TLDInfo['name'] = tld.attrs['name']
+
+#         TLDInfo['source'] = tld.findChildren('source')[0].string
+#         TLDInfo['created'] = tld.findChildren('created')[0].string
+#         TLDInfo['changed'] = tld.findChildren('changed')[0].string
+#         TLDInfo['state'] = tld.findChildren('state')[0].string
+
+#         return TLDInfo
+
+#     def mapTLDToDomainServer(self):
+#         soup = bs4.BeautifulSoup(self.page, "lxml")
+#         tlds = soup.findAll('domain')
+#         for tld in tlds:
+#             TLDInfo = self.parseTLD(tld)
+#             print(TLDInfo)
+
+
+# def show_raw_whois():
+#     no_creation_date = []
+#     not_exists = []
+#     to_fix = []
+#     with open('/home/uri/Desktop/Bad4.txt') as f:
+#         content = f.readlines()
+
+#     for domain in content:
+#         try:
+#             print("\n\n\n\nRunning " + "whois " + domain + "\n\n\n\n")
+#             completed_process = subprocess.run(
+#                         args=shlex.split("whois " + domain.rstrip(), posix=True),
+#                         stdout=subprocess.PIPE,
+#                         stderr=subprocess.STDOUT,
+#                         timeout=10,
+#                         )
+#             sout = completed_process.stdout
+#             print(sout.decode())
+#             ans = input("To which list  " + domain.rstrip() + " belong?")
+#             if ans == 'd':
+#                 no_creation_date.append(domain.rstrip())
+#                 continue
+#             if ans == 'e':
+#                 not_exists.append(domain.rstrip())
+#                 continue
+#             if ans == 'save':
+#                 # no_creation_date_file = open('/home/uri/Desktop/no_creation_date.txt', "w")
+#                 # not_exists_file = open('/home/uri/Desktop/not_exists.txt', "w")
+#                 # to_fix_file = open('/home/uri/Desktop/to_fix.txt', "w")
+#                 #
+#                 # no_creation_date_file.write("\n".join(no_creation_date))
+#                 # not_exists_file.write("\n".join(not_exists))
+#                 # to_fix_file.write("\n".join(to_fix))
+#                 print("\n\n\nNo creation date: \n\n\n" + "\n".join(no_creation_date))
+#                 print("\n\n\nto_fix: \n\n\n" + "\n".join(to_fix))
+#                 print("\n\n\nnot_exists: \n\n\n" + "\n".join(not_exists))
+#                 continue
+#             else:
+#                 to_fix.append(ans + " | " + domain.rstrip())
+#                 continue
+#         except Exception as ex:
+#             not_exists.append(domain.rstrip())
+
+
+# if "__main__" == __name__:
+#     # ok = WhoIsServerListHandler('https://raw.githubusercontent.com/whois-server-list/whois-server-list/master/whois-server-list.xml')
+#     # ok.mapTLDToDomainServer()
+#     test_who_is()
+#     # show_raw_whois()
+#     # import ipdb; ipdb.set_trace()
+#     # check_domain('abalfazlschools.ir')

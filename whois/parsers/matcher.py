@@ -2,12 +2,20 @@ import re
 
 
 class Regex:
-    def __init__(self, pattern, group, flags):
+    def __init__(
+        self,
+        pattern,
+        group,
+        flags,
+    ):
         self.pattern = pattern
         self.group = group
         self.flags = flags
 
-    def match(self, subject):
+    def match(
+        self,
+        subject,
+    ):
         match = re.search(
             pattern=self.pattern,
             string=subject,

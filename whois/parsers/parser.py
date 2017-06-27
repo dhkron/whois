@@ -4,16 +4,15 @@ from . import _converters
 
 
 class Parser:
-    '''
-    '''
     domain_not_exist_patterns = resources.patterns.domain_not_exist_patterns
     blocked_whois_request_patterns = resources.patterns.blocked_whois_request_patterns
     has_no_whois_server_patterns = resources.patterns.has_no_whois_server_patterns
 
     @classmethod
-    def parse(cls, raw_whois):
-        '''
-        '''
+    def parse(
+        cls,
+        raw_whois,
+    ):
         parsed_whois = {}
 
         creation_date = cls.extract_creation_date(
@@ -51,7 +50,10 @@ class Parser:
         return parsed_whois
 
     @classmethod
-    def has_error(cls, raw_whois):
+    def has_error(
+        cls,
+        raw_whois,
+    ):
         has_whois_server = cls.has_whois_server(
             raw_whois=raw_whois,
         )
@@ -77,9 +79,10 @@ class Parser:
         return 'no_error'
 
     @classmethod
-    def is_blocked(cls, raw_whois):
-        '''
-        '''
+    def is_blocked(
+        cls,
+        raw_whois,
+    ):
         for blocked_whois_request_pattern in cls.blocked_whois_request_patterns:
             if blocked_whois_request_pattern.findall(
                 string=raw_whois,
@@ -89,9 +92,10 @@ class Parser:
         return False
 
     @classmethod
-    def has_whois_server(cls, raw_whois):
-        '''
-        '''
+    def has_whois_server(
+        cls,
+        raw_whois,
+    ):
         for has_no_whois_server_pattern in cls.has_no_whois_server_patterns:
             if has_no_whois_server_pattern.findall(
                 string=raw_whois,
@@ -101,9 +105,10 @@ class Parser:
         return True
 
     @classmethod
-    def is_domain_exist(cls, raw_whois):
-        '''
-        '''
+    def is_domain_exist(
+        cls,
+        raw_whois,
+    ):
         for domain_not_exist_pattern in cls.domain_not_exist_patterns:
             if domain_not_exist_pattern.findall(
                 string=raw_whois,
@@ -113,7 +118,10 @@ class Parser:
         return True
 
     @classmethod
-    def extract_creation_date(cls, raw_whois):
+    def extract_creation_date(
+        cls,
+        raw_whois,
+    ):
         creation_date = cls.extract(
             attribute_name='creation_date',
             subject=raw_whois,
@@ -122,7 +130,10 @@ class Parser:
         return creation_date
 
     @classmethod
-    def extract_updated_date(cls, raw_whois):
+    def extract_updated_date(
+        cls,
+        raw_whois,
+    ):
         updated_date = cls.extract(
             attribute_name='updated_date',
             subject=raw_whois,
@@ -131,7 +142,10 @@ class Parser:
         return updated_date
 
     @classmethod
-    def extract_expiration_date(cls, raw_whois):
+    def extract_expiration_date(
+        cls,
+        raw_whois,
+    ):
         expiration_date = cls.extract(
             attribute_name='expiration_date',
             subject=raw_whois,
@@ -140,7 +154,10 @@ class Parser:
         return expiration_date
 
     @classmethod
-    def extract_registrar(cls, raw_whois):
+    def extract_registrar(
+        cls,
+        raw_whois,
+    ):
         registrar = cls.extract(
             attribute_name='registrar',
             subject=raw_whois,
@@ -160,7 +177,10 @@ class Parser:
         return registrar
 
     @classmethod
-    def extract_registrant(cls, raw_whois):
+    def extract_registrant(
+        cls,
+        raw_whois,
+    ):
         registrant = cls.extract(
             attribute_name='registrant',
             subject=raw_whois,
@@ -169,7 +189,10 @@ class Parser:
         return registrant
 
     @classmethod
-    def extract_abuse_email(cls, raw_whois):
+    def extract_abuse_email(
+        cls,
+        raw_whois,
+    ):
         abuse_email = cls.extract(
             attribute_name='abuse_email',
             subject=raw_whois,
@@ -178,9 +201,11 @@ class Parser:
         return abuse_email
 
     @classmethod
-    def extract(cls, attribute_name, subject):
-        '''
-        '''
+    def extract(
+        cls,
+        attribute_name,
+        subject,
+    ):
         match = None
         for matcher in _matchers.matchers[attribute_name]:
             match = matcher.match(subject)
@@ -197,17 +222,25 @@ class Parser:
         return None
 
 
-class ParserException(Exception):
+class ParserException(
+    Exception,
+):
     pass
 
 
-class NoWhoisServer(ParserException):
+class NoWhoisServer(
+    ParserException,
+):
     pass
 
 
-class DomainNotExists(ParserException):
+class DomainNotExists(
+    ParserException,
+):
     pass
 
 
-class Blocked(ParserException):
+class Blocked(
+    ParserException,
+):
     pass

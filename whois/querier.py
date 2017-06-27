@@ -8,9 +8,9 @@ from . import resolvers
 
 
 class Querier:
-    '''
-    '''
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         self.whois_parser = parser.Parser()
         self.resolver = resolver.Resolver()
 
@@ -18,7 +18,10 @@ class Querier:
             include_psl_private_domains=True,
         )
 
-    def get_domain_parts(self, domain):
+    def get_domain_parts(
+        self,
+        domain,
+    ):
         domain_extracted = self.tld_extractor(domain)
 
         domain_part = domain_extracted.domain
@@ -32,9 +35,11 @@ class Querier:
             'suffix': suffix_part,
         }
 
-    def query(self, domain, method='program'):
-        '''
-        '''
+    def query(
+        self,
+        domain,
+        method='program',
+    ):
         domain_parts = self.get_domain_parts(
             domain=domain,
         )
@@ -99,38 +104,59 @@ class Querier:
         return whois_result
 
 
-class WhoisResolverException(Exception):
-    def __init__(self, raw_whois=''):
+class WhoisResolverException(
+    Exception,
+):
+    def __init__(
+        self,
+        raw_whois='',
+    ):
         self.raw_whois = raw_whois
 
 
-class ParsingError(WhoisResolverException):
+class ParsingError(
+    WhoisResolverException,
+):
     pass
 
 
-class DomainNotExists(WhoisResolverException):
+class DomainNotExists(
+    WhoisResolverException,
+):
     pass
 
 
-class NoWhoisServer(WhoisResolverException):
+class NoWhoisServer(
+    WhoisResolverException,
+):
     pass
 
 
-class Blocked(WhoisResolverException):
+class Blocked(
+    WhoisResolverException,
+):
     pass
 
 
-class WhoisTimedOut(WhoisResolverException):
+class WhoisTimedOut(
+    WhoisResolverException,
+):
     pass
 
 
-class ErrorOccured(WhoisResolverException):
+class ErrorOccured(
+    WhoisResolverException,
+):
     pass
 
 
-class InvalidDomain(WhoisResolverException):
+class InvalidDomain(
+    WhoisResolverException,
+):
     pass
 
 
-class BlockedAndNotexistConflict(WhoisResolverException):
+class BlockedAndNotexistConflict(
+    WhoisResolverException,
+):
     pass

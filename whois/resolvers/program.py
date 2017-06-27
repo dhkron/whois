@@ -10,13 +10,16 @@ import time
 from . import _resolver
 
 
-class Resolver(_resolver.Resolver):
-    '''
-    '''
+class Resolver(
+    _resolver.Resolver,
+):
     name = 'program'
 
     @classmethod
-    def get_raw_whois(cls, domain):
+    def get_raw_whois(
+        cls,
+        domain,
+    ):
         current_os = platform.system()
         current_architecture = platform.architecture()
         current_architecture_bits = current_architecture[0]
@@ -145,9 +148,10 @@ class Resolver(_resolver.Resolver):
                 return all_output.strip()
 
     @classmethod
-    def remove_program_banner(cls, raw_whois):
-        '''
-        '''
+    def remove_program_banner(
+        cls,
+        raw_whois,
+    ):
         raw_whois = re.sub(
             pattern='.*Mark Russinovich',
             repl='',
@@ -164,9 +168,10 @@ class Resolver(_resolver.Resolver):
         return raw_whois
 
     @classmethod
-    def normalize_raw_whois(cls, raw_whois):
-        '''
-        '''
+    def normalize_raw_whois(
+        cls,
+        raw_whois,
+    ):
         normalized_whois = raw_whois
 
         normalized_whois = normalized_whois.replace('\r\n', '\n')

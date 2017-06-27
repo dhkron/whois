@@ -19,8 +19,6 @@ class Registrars:
         cls,
         subject,
     ):
-        '''
-        '''
         cls.check_and_update_registrars()
 
         edited_subject = re.sub(
@@ -48,7 +46,9 @@ class Registrars:
         return most_close_registrar
 
     @classmethod
-    def should_update_registrars_file(cls):
+    def should_update_registrars_file(
+        cls,
+    ):
         if not os.path.exists(cls.registrars_file_path):
             return True
 
@@ -59,7 +59,9 @@ class Registrars:
         return False
 
     @classmethod
-    def check_and_update_registrars(cls):
+    def check_and_update_registrars(
+        cls,
+    ):
         update_registrars_files = cls.should_update_registrars_file()
 
         if update_registrars_files:
@@ -69,7 +71,9 @@ class Registrars:
             cls.update_registrars()
 
     @classmethod
-    def update_registrars(cls):
+    def update_registrars(
+        cls,
+    ):
         with open(cls.registrars_file_path) as registrars_names_file:
             original_names = registrars_names_file.readlines()
 
@@ -90,7 +94,9 @@ class Registrars:
         ]
 
     @classmethod
-    def update_registrars_file(cls):
+    def update_registrars_file(
+        cls,
+    ):
         response = requests.get(
             url='https://www.icann.org/registrar-reports/accredited-list.html',
         )

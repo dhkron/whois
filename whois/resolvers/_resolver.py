@@ -1,22 +1,25 @@
 class Resolver:
-    '''
-    '''
     name = ''
 
     @classmethod
-    def get_raw_whois(cls, domain):
+    def get_raw_whois(
+        cls,
+        domain,
+    ):
         raise NotImplemented()
 
     @classmethod
-    def normalize_raw_whois(cls, raw_whois):
-        '''
-        '''
+    def normalize_raw_whois(
+        cls,
+        raw_whois,
+    ):
         raise NotImplemented()
 
     @classmethod
-    def resolve(cls, domain):
-        '''
-        '''
+    def resolve(
+        cls,
+        domain,
+    ):
         raw_whois = cls.get_raw_whois(
             domain=domain,
         )
@@ -28,9 +31,13 @@ class Resolver:
         return normalized_whois
 
 
-class ResolverException(Exception):
+class ResolverException(
+    Exception,
+):
     pass
 
 
-class WhoisTimedOut(ResolverException):
+class WhoisTimedOut(
+    ResolverException,
+):
     pass
