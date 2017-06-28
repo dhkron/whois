@@ -65,6 +65,10 @@ email_converters = [
     converter.Dummy(),
 ]
 
+domain_status_converters = [
+    converter.Dummy(),
+]
+
 converters = {
     'creation_date': date_converters,
     'updated_date': date_converters,
@@ -72,4 +76,5 @@ converters = {
     'registrar': registrar_converters,
     'registrant': registrant_converters,
     'abuse_email': email_converters,
+    'domain_status': domain_status_converters,
 }

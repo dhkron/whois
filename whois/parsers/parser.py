@@ -47,6 +47,11 @@ class Parser:
         )
         parsed_whois['additional']['abuse_email'] = abuse_email
 
+        domain_status = cls.extract_domain_status(
+            raw_whois=raw_whois,
+        )
+        parsed_whois['additional']['domain_status'] = domain_status
+
         return parsed_whois
 
     @classmethod
@@ -201,6 +206,18 @@ class Parser:
         return abuse_email
 
     @classmethod
+    def extract_domain_status(
+        cls,
+        raw_whois,
+    ):
+        domain_status = cls.extract_all(
+            attribute_name='domain_status',
+            subject=raw_whois,
+        )
+
+        return domain_status
+
+    @classmethod
     def extract(
         cls,
         attribute_name,
@@ -218,6 +235,28 @@ class Parser:
                     continue
 
                 return conversion
+
+        return None
+
+    @classmethod
+    def extract_all(
+        cls,
+        attribute_name,
+        subject,
+    ):
+        matches = None
+        for matcher in _matchers.matchers[attribute_name]:
+            matches = matcher.finditer(subject)
+            if not matches:
+                continue
+
+            for match in matches:
+                for converter in _converters.converters[attribute_name]:
+                    conversion = converter.convert(match)
+                    if not conversion:
+                        continue
+
+                    yield conversion
 
         return None
 

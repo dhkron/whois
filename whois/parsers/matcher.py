@@ -29,3 +29,24 @@ class Regex:
             return None
 
         return match.group(self.group)
+
+    def finditer(
+        self,
+        subject,
+    ):
+        matches = re.finditer(
+            pattern=self.pattern,
+            string=subject,
+            flags=self.flags,
+        )
+
+        for match in matches:
+            if not match or not match.groups():
+                continue
+
+            if self.group not in match.groupdict():
+                continue
+
+            yield match.group(self.group)
+
+        return None

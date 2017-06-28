@@ -755,5 +755,12 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
-    ]
+    ],
+    'domain_status': [
+        matcher.Regex(
+            pattern=r'Domain Status: (?P<value>[a-z]+)(:? .+)?\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
+    ],
 }
