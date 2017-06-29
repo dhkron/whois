@@ -750,7 +750,7 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
-        matcher.Regex(  # jcbressources.fr, queried 2017-05-29
+        matcher.Regex(
             pattern=r'trouble:\s+Spam:\s*mailto:(?P<value>.+)\n',
             group='value',
             flags=re.IGNORECASE,
@@ -762,5 +762,14 @@ matchers = {
             group='value',
             flags=re.IGNORECASE,
         ),
+        matcher.Regex(
+            pattern=r'   Status: *?(?P<value>[a-z]+?)(:? .+)?\n',
+            group='value',
+            flags=re.IGNORECASE,
+        ),
     ],
 }
+
+'''
+abuse_email -> trouble:\s+Spam:\s*mailto:(?P<value>.+)\n -> jcbressources.fr, queried 2017-05-29
+'''

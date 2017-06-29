@@ -215,7 +215,9 @@ class Parser:
             subject=raw_whois,
         )
 
-        return domain_status
+        domain_status_set = set(domain_status)
+
+        return list(domain_status_set)
 
     @classmethod
     def extract(
