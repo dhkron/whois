@@ -258,6 +258,8 @@ class Parser:
 
                     yield conversion
 
+                    break
+
         return None
 
 
